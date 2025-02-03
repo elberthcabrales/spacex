@@ -8,6 +8,8 @@ from alembic import context
 from sqlmodel import SQLModel
 # api model imports
 from app.core.domain.rocket import Rocket
+from app.core.domain.first_stage import FirstStage
+from app.core.domain.second_stage import SecondStage
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
