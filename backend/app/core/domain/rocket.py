@@ -1,18 +1,19 @@
-class Rocket:
-    """
-    Domain entity representing a Rocket with core attributes
-    needed for business logic (e.g., cost per launch, stages).
-    """
+from typing import Optional
+from sqlmodel import SQLModel, Field
 
-    def __init__(self, name: str, is_active: bool, cost_per_launch: int, stages: int):
-        self.name = name
-        self.is_active = is_active
-        self.cost_per_launch = cost_per_launch
-        self.stages = stages
+class Rocket(SQLModel, table=True):
+    __tablename__ = "rockets"  # Not strictly required; SQLModel infers from class name
 
-    def can_reuse(self) -> bool:
-        """
-        Example domain method: Return True if rocket 
-        has at least one reusable stage (fake logic here).
-        """
-        return self.stages > 1 and self.is_active
+    id: Optional[int] = Field(default=None, primary_key=True)
+    rocket_uuid: str = Field(unique=True)
+    description: Optional[str] = Field(default=None)
+    name: Optional[str] = Field(default=None)
+    active: Optional[bool] = Field(default=None)
+    wikipedia: Optional[str] = Field(default=None)
+    weight: Optional[str] = Field(default=None)
+    height: Optional[float] = Field(default=None)
+    diameter: Optional[float] = Field(default=None)
+    cost_per_launch: Optional[int] = Field(default=None)
+    first_flight: Optional[str] = Field(default=None)
+    country: Optional[str] = Field(default=None)
+    stages: Optional[int] = Field(default=None)

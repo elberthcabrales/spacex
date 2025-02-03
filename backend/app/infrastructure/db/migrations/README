@@ -1,0 +1,12 @@
+Generic single-database configuration.
+
+1. import the sqlmodel on env.py
+`from sqlmodel import SQLModel`
+2. import the models on env.py
+`from app.core.domain.rocket import Rocket`
+3. add your models here
+`target_metadata = SQLModel.metadata`
+4. create migration  
+`alembic revision --autogenerate -m "Create rockets table"`
+5. run migrations
+`alembic upgrade head`
