@@ -10,3 +10,11 @@ Generic single-database configuration.
 `alembic revision --autogenerate -m "Create rockets table"`
 5. run migrations
 `alembic upgrade head`
+
+### Commands
+```bash
+ alembic revision --autogenerate -m "Create launches table"
+# after created import on the migration import sqlmodel.sql.sqltypes
+
+ alembic upgrade head
+```

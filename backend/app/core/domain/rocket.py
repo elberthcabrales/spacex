@@ -1,5 +1,5 @@
 # app/core/domain/rocket.py
-from typing import Optional
+from typing import List, Optional
 from sqlmodel import SQLModel, Field, Relationship
 from app.core.domain.first_stage import FirstStage
 from app.core.domain.second_stage import SecondStage
@@ -27,3 +27,5 @@ class Rocket(SQLModel, table=True):
     second_stage: Optional["SecondStage"] = Relationship(
         back_populates="rocket", sa_relationship_kwargs={"uselist": False}
     )
+
+    launches: List["Launch"] = Relationship(back_populates="rocket")

@@ -10,6 +10,9 @@ from sqlmodel import SQLModel
 from app.core.domain.rocket import Rocket
 from app.core.domain.first_stage import FirstStage
 from app.core.domain.second_stage import SecondStage
+from app.core.domain.launch import Launch
+from app.core.domain.failure import Failure
+from app.core.domain.starlink import Starlink
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

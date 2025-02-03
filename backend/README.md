@@ -24,3 +24,8 @@
 ├── requirements.txt        # Dependencies
 └── README.md
 ```
+
+
+# run in order
+1. fill rockets and segments
+> python app/infrastructure/scripts/populate_rockets.py -v  
