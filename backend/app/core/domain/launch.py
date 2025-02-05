@@ -33,6 +33,11 @@ class StarlinkResponse(SQLModel):
     starlink_uuid: str = Field(title="Starlink UUID", description="Unique identifier for the Starlink satellite")
     name: Optional[str] = Field(default=None, title="Name", description="Name of the Starlink satellite")
 
+class RocketResponse(SQLModel):
+    name: str
+    cost_per_launch: int
+    active: bool
+    
 class LaunchResponse(SQLModel):
     """API response schema for Launches."""
     launched_uuid: str = Field(title="Launch UUID", description="Unique identifier for the launch")
