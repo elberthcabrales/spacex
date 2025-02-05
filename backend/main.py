@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.routers import rockets, health, launches, starlinks
+from app.api.routers import rockets, health, launches, starlinks, dashboard
 from app.infrastructure.db.database import init_db
 
 app = FastAPI(title="SpaceX API")
@@ -14,3 +14,4 @@ app.include_router(health.router, prefix="/api")
 app.include_router(rockets.router, prefix="/api")
 app.include_router(launches.router, prefix="/api")
 app.include_router(starlinks.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")

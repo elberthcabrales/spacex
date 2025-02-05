@@ -93,6 +93,7 @@ def fetch_and_load_launches(session: Session) -> None:
             launch = Launch(
                 launched_uuid=item["id"],
                 details=item.get("details"),
+                mission_name=item.get("name"),
                 upcoming=item.get("upcoming"),
                 success=item.get("success"),
                 image=item["links"]["patch"]["small"] if item["links"]["patch"] else None,

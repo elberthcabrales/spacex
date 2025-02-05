@@ -6,6 +6,7 @@ class Launch(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     launched_uuid: str = Field(unique=True, nullable=False)
+    mission_name: Optional[str] = Field(default=None)
     details: Optional[str] = Field(default=None)
     upcoming: Optional[bool] = Field(default=None)
     success: Optional[bool] = Field(default=None)
@@ -41,6 +42,7 @@ class RocketResponse(SQLModel):
 class LaunchResponse(SQLModel):
     """API response schema for Launches."""
     launched_uuid: str = Field(title="Launch UUID", description="Unique identifier for the launch")
+    mission_name: Optional[str] = Field(default=None, title="Mission Name", description="Name of the mission")
     details: Optional[str] = Field(default=None, title="Details", description="Description of the launch")
     upcoming: Optional[bool] = Field(default=None, title="Upcoming", description="Whether the launch is upcoming")
     success: Optional[bool] = Field(default=None, title="Success", description="Whether the launch was successful")
