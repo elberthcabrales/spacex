@@ -12,9 +12,8 @@ class GetLaunchesUseCase:
 
     def execute(
         self,
+        mission_name: Optional[str] = None,
         details: Optional[str] = None,
-        upcoming: Optional[bool] = None,
-        success: Optional[bool] = None,
         sort_by: Optional[str] = None,
         order: Optional[str] = "asc",
         skip: int = 0,
@@ -23,9 +22,8 @@ class GetLaunchesUseCase:
         """Retrieve filtered and paginated launches with related data."""
         
         launches, total_count = self.repository.get_all(
+            mission_name=mission_name,
             details=details,
-            upcoming=upcoming,
-            success=success,
             sort_by=sort_by,
             order=order,
             skip=skip,

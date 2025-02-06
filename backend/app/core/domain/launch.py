@@ -9,7 +9,7 @@ class Launch(SQLModel, table=True):
     mission_name: Optional[str] = Field(default=None)
     details: Optional[str] = Field(default=None)
     upcoming: Optional[bool] = Field(default=None)
-    success: Optional[bool] = Field(default=None)
+    success: Optional[bool] = Field(default=False)
     image: Optional[str] = Field(default=None)  # links.patch.small
     webcast: Optional[str] = Field(default=None)  # links.webcast
     article: Optional[str] = Field(default=None)
@@ -41,7 +41,6 @@ class RocketResponse(SQLModel):
     
 class LaunchResponse(SQLModel):
     """API response schema for Launches."""
-    launched_uuid: str = Field(title="Launch UUID", description="Unique identifier for the launch")
     mission_name: Optional[str] = Field(default=None, title="Mission Name", description="Name of the mission")
     details: Optional[str] = Field(default=None, title="Details", description="Description of the launch")
     upcoming: Optional[bool] = Field(default=None, title="Upcoming", description="Whether the launch is upcoming")

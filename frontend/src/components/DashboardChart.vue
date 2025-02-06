@@ -78,95 +78,17 @@ export default {
   name: "RocketInsights",
   data() {
     return {
-      rockets: [
-        {
-          rocket_name: "Falcon 1",
-          active: false,
-          weight: "30146",
-          height: 22.25,
-          diameter: 1.68,
-          cost_per_launch: 6700000,
-          first_flight: "2006-03-24",
-          stages: 2,
-          first_stage_reusable: false,
-          first_stage_engines: 1,
-          first_stage_fuel_amount_tons: 44,
-          second_stage_reusable: false,
-          second_stage_engines: 1,
-          second_stage_fuel_amount_tons: 3,
-          total_successful_launches: 2,
-          total_upcoming_launches: 0,
-          total_failures: 3,
-          total_starlinks_deployed: 0,
-          total_failures_per_rocket: 3,
-        },
-        {
-          rocket_name: "Falcon 9",
-          active: true,
-          weight: "549054",
-          height: 70,
-          diameter: 3.7,
-          cost_per_launch: 50000000,
-          first_flight: "2010-06-04",
-          stages: 2,
-          first_stage_reusable: true,
-          first_stage_engines: 9,
-          first_stage_fuel_amount_tons: 385,
-          second_stage_reusable: false,
-          second_stage_engines: 1,
-          second_stage_fuel_amount_tons: 90,
-          total_successful_launches: 3231,
-          total_upcoming_launches: 69,
-          total_failures: 2,
-          total_starlinks_deployed: 3215,
-          total_failures_per_rocket: 2,
-        },
-        {
-          rocket_name: "Falcon Heavy",
-          active: true,
-          weight: "1420788",
-          height: 70,
-          diameter: 12.2,
-          cost_per_launch: 90000000,
-          first_flight: "2018-02-06",
-          stages: 2,
-          first_stage_reusable: true,
-          first_stage_engines: 27,
-          first_stage_fuel_amount_tons: 1155,
-          second_stage_reusable: false,
-          second_stage_engines: 1,
-          second_stage_fuel_amount_tons: 90,
-          total_successful_launches: 3,
-          total_upcoming_launches: 2,
-          total_failures: 0,
-          total_starlinks_deployed: 0,
-          total_failures_per_rocket: 0,
-        },
-        {
-          rocket_name: "Starship",
-          active: false,
-          weight: "1335000",
-          height: 118,
-          diameter: 9,
-          cost_per_launch: 7000000,
-          first_flight: "2021-12-01",
-          stages: 2,
-          first_stage_reusable: true,
-          first_stage_engines: 37,
-          first_stage_fuel_amount_tons: 3300,
-          second_stage_reusable: true,
-          second_stage_engines: 6,
-          second_stage_fuel_amount_tons: 1200,
-          total_successful_launches: 0,
-          total_upcoming_launches: 0,
-          total_failures: 0,
-          total_starlinks_deployed: 0,
-          total_failures_per_rocket: 0,
-        },
-      ],
+      rockets: [], // Data fetched from the API
+      loading: true, // Loading state
+      error: null, // Error state
     };
   },
-  mounted() {
+  async mounted() {
+    const response = await fetch("http://127.0.0.1:8000/api/dashboard/");
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    this.rockets = await response.json();
     this.drawCostChart();
     this.drawHeightChart();
     this.drawDiameterChart();
@@ -217,7 +139,45 @@ export default {
         .text(title);
     },
     drawCostChart() {
-      this.drawBarChart("costChart", "", "cost_per_launch", 400, 300, "steelblue");
+      const margin = { top: 20, right: 30, bottom: 40, left: 90 };
+      const width = 400 - margin.left - margin.right;
+      const height = 300 - margin.top - margin.bottom;
+
+      const svg = d3
+        .select(this.$refs.costChart)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const x = d3.scaleLinear()
+        .domain([0, d3.max(this.rockets, (d) => +d.cost_per_launch)])
+        .range([0, width]);
+
+      const y = d3.scaleBand()
+        .domain(this.rockets.map((d) => d.rocket_name))
+        .range([0, height])
+        .padding(0.1);
+
+      // Format numbers for the x-axis (e.g., "7M" for 7,000,000)
+      const formatMillions = d3.format(".1s"); // Formats numbers with a single significant digit and SI prefix <button class="citation-flag" data-index="2">
+      svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).tickFormat((d) => formatMillions(d)));
+
+      svg.append("g").call(d3.axisLeft(y));
+
+      svg.selectAll(".bar")
+        .data(this.rockets)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", 0)
+        .attr("y", (d) => y(d.rocket_name))
+        .attr("width", (d) => x(+d.cost_per_launch))
+        .attr("height", y.bandwidth())
+        .attr("fill", "steelblue");
     },
     drawHeightChart() {
       this.drawBarChart("heightChart", "", "height", 400, 300, "orange");

@@ -1,7 +1,5 @@
 <template>
     <div class="bg-space-gradient min-h-screen p-8 text-white">
-        <h2 class="text-3xl font-bold mb-6">Rockets</h2>
-
         <!-- Search + Pagination Controls -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <!-- Search Filter -->

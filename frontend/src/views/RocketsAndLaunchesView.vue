@@ -1,20 +1,20 @@
 <template>
   <div class="dashboard-container p-4">
-    <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+    <h1 class="text-3xl font-bold mb-6">Launches and rockets</h1>
     <!-- Use the RocketList component here -->
-    <RocketList />
+    <LaunchList />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import RocketList from '@/components/RocketList.vue';
+import LaunchList from '@/components/LaunchList.vue';
 // Update the import path according to your folder structure
 
 export default defineComponent({
-  name: 'DashboardView',
+  name: 'RocetsAndLaunchesView',
   components: {
-    RocketList
+    LaunchList
   }
 });
 </script>

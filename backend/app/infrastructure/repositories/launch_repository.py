@@ -1,11 +1,10 @@
 from typing import List, Optional
-from sqlalchemy import func
+from sqlalchemy import func, asc, desc
 from sqlmodel import select
 from sqlalchemy.orm import Session, joinedload
 from app.core.domain.launch import Launch
 from app.core.domain.rocket import Rocket
 from app.core.domain.failure import Failure
-from app.core.domain.starlink import Starlink
 
 class LaunchRepository:
     """
@@ -16,6 +15,7 @@ class LaunchRepository:
 
     def get_all(
         self,
+        mission_name: Optional[str] = None,
         details: Optional[str] = None,
         upcoming: Optional[bool] = None,
         success: Optional[bool] = None,
@@ -30,12 +30,14 @@ class LaunchRepository:
             select(Launch)
             .options(
                 joinedload(Launch.rocket), 
-                joinedload(Launch.failures), 
+                joinedload(Launch.failures)
             )
         )
 
         # Apply filters
         filters = []
+        if mission_name:
+            filters.append(Launch.mission_name.ilike(f"%{mission_name}%"))
         if details:
             filters.append(Launch.details.ilike(f"%{details}%"))
         if upcoming is not None:
@@ -46,29 +48,44 @@ class LaunchRepository:
         if filters:
             query = query.where(*filters)
 
-        # Sorting
+        # Sorting options with proper joins
         sort_options = {
+            "mission_name": Launch.mission_name,
+            "details": Launch.details,
             "success": Launch.success,
             "upcoming": Launch.upcoming,
-            "article": Launch.article
+            "rocket_name": Rocket.name,
+            "rocket_cost": Rocket.cost_per_launch,
+            "rocket_active": Rocket.active,
+            "failures": Failure.reason,  # Sorting by failure reason
         }
-        sort_field = sort_options.get(sort_by, Launch.id)  # Default sorting by ID
-        query = query.order_by(sort_field.desc() if order == "desc" else sort_field.asc())
+
+        # Validate `sort_by` to avoid KeyError
+        if sort_by and sort_by in sort_options:
+            sort_field = sort_options[sort_by]
+            
+            # If sorting by a related table (Rocket, Failure), we need to join it
+            if sort_by in ["rocket_name", "rocket_cost", "rocket_active"]:
+                query = query.join(Rocket, Launch.rocket_uuid == Rocket.rocket_uuid)
+            elif sort_by == "failures":
+                query = query.outerjoin(Failure, Launch.launched_uuid == Failure.launched_uuid)
+            
+            # Apply sorting order
+            query = query.order_by(desc(sort_field) if order == "desc" else asc(sort_field))
 
         # Get total count before pagination
         total_count = self.session.execute(select(func.count()).select_from(query.subquery())).scalar_one()
 
         # Apply pagination
         query = query.offset(skip).limit(limit)
-        print(query)
 
         # Execute query and ensure unique results
-        results = self.session.execute(query).unique().scalars().all()  # ✅ Added `.unique()`
+        results = self.session.execute(query).scalars().unique().all()
 
         # Format response
         launches = [
             {
-                "launched_uuid": launch.launched_uuid,
+                "mission_name": launch.mission_name,
                 "details": launch.details,
                 "upcoming": launch.upcoming,
                 "success": launch.success,
