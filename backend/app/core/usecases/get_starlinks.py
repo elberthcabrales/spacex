@@ -13,8 +13,6 @@ class GetStarlinksUseCase:
     def execute(
         self,
         name: Optional[str] = None,
-        object_name: Optional[str] = None,
-        country_code: Optional[str] = None,
         sort_by: Optional[str] = None,
         order: Optional[str] = "asc",
         skip: int = 0,
@@ -24,8 +22,6 @@ class GetStarlinksUseCase:
 
         starlinks, total_count = self.repository.get_all(
             name=name,
-            object_name=object_name,
-            country_code=country_code,
             sort_by=sort_by,
             order=order,
             skip=skip,

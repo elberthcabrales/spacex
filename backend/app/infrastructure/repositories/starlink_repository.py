@@ -36,10 +36,6 @@ class StarlinkRepository:
         filters = []
         if name:
             filters.append(Starlink.name.ilike(f"%{name}%"))
-        if object_name:
-            filters.append(Starlink.object_name.ilike(f"%{object_name}%"))
-        if country_code:
-            filters.append(Starlink.country_code == country_code)
 
         if filters:
             query = query.where(*filters)
@@ -48,9 +44,13 @@ class StarlinkRepository:
         sort_options = {
             "name": Starlink.name,
             "creation_date": Starlink.creation_date,
-            "object_name": Starlink.object_name
+            "object_name": Starlink.object_name, 
+            "country_code": Starlink.country_code
         }
-        sort_field = sort_options.get(sort_by, Starlink.id)  # Default sorting by ID
+        sort_field = sort_options.get(# The `sort_by` parameter in the `get_all` method of the
+        # `StarlinkRepository` class is used for specifying the field by
+        # which the retrieved Starlinks should be sorted.
+        sort_by, Starlink.id)  # Default sorting by ID
         query = query.order_by(sort_field.desc() if order == "desc" else sort_field.asc())
 
         # Get total count before pagination
@@ -71,6 +71,7 @@ class StarlinkRepository:
                 "object_name": starlink.object_name,
                 "country_code": starlink.country_code,
                 "rocket": {
+                    "rocket__uuid": starlink.launch.rocket.rocket_uuid if starlink.launch and starlink.launch.rocket else None,
                     "name": starlink.launch.rocket.name if starlink.launch and starlink.launch.rocket else None,
                     "cost_per_launch": starlink.launch.rocket.cost_per_launch if starlink.launch and starlink.launch.rocket else None,
                     "active": starlink.launch.rocket.active if starlink.launch and starlink.launch.rocket else None

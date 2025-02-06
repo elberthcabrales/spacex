@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-black text-white font-space-mono pb-7">
+  <div class="bg-space-gradient min-h-screen p-8 text-white">
     <!-- Dashboard Title -->
-    <h2 class="text-3xl font-bold text-center text-blue-400 py-8">Rocket Insights Dashboard</h2>
+    <h2 class="text-3xl font-bold text-center text-blue-400 py-8">Insights</h2>
 
     <!-- Dashboard Grid -->
     <div class="dashboard grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 container mx-auto ">

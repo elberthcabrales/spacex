@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container p-4">
-    <h1 class="text-3xl font-bold mb-6">Launches and rockets</h1>
+    <h1 class="text-3xl font-bold mb-10">Launches and rockets</h1>
     <!-- Use the RocketList component here -->
     <LaunchList />
   </div>

@@ -9,8 +9,8 @@ class Starlink(SQLModel, table=True):
     starlink_uuid: str = Field(unique=True, nullable=False)  # ID from SpaceX API
     name: Optional[str] = Field(default=None)
     creation_date: Optional[str] = Field(default=None)  # spaceTrack.creation_date
-    object_name: Optional[str] = Field(default=None)  # spaceTrack.object_name
     country_code: Optional[str] = Field(default=None)  # spaceTrack.country_code
+    object_name: Optional[str] = Field(default=None)  # spaceTrack.object_name
     launched_uuid: Optional[str] = Field(
         foreign_key="launches.launched_uuid", nullable=True
     )
@@ -27,7 +27,6 @@ class StarlinkBase(SQLModel):
     starlink_uuid: str = Field(unique=True, nullable=False, title="Starlink UUID", description="Unique identifier for the Starlink")
     name: Optional[str] = Field(default=None, title="Name", description="Name of the Starlink satellite")
     creation_date: Optional[str] = Field(default=None, title="Creation Date", description="Date when the satellite was created")
-    object_name: Optional[str] = Field(default=None, title="Object Name", description="Name of the object")
     country_code: Optional[str] = Field(default=None, title="Country Code", description="Country code of origin")
 
 class StarlinkResponse(StarlinkBase):
