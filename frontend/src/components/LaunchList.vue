@@ -85,7 +85,8 @@
                                 {{ launch.success ? "Yes" : "No" }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 border-b border-white/10">
+                        <td class="px-6 py-4 border-b border-white/10 cursor-pointer text-blue-400 hover:underline"
+                            @click="fetchRocketDetails(launch.rocket.rocket_uuid)">
                             {{ launch.rocket?.name || "N/A" }}
                         </td>
                         <td class="px-6 py-4 border-b border-white/10">
@@ -99,6 +100,8 @@
                 </tbody>
             </table>
         </div>
+        <!-- Rocket Modal -->
+        <RocketModal :isOpen="isModalOpen" :rocket="selectedRocket" @close="closeModal" />
         <!-- Bottom Pagination (Optional) -->
         <div class="flex justify-end items-center mt-4">
             <button class="bg-white/10 px-4 py-1 rounded mr-2 disabled:opacity-50 hover:bg-white/20 transition"
@@ -116,9 +119,24 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from 'vue';
+import RocketModal from '@/components/RocketModal.vue';
 import axios from 'axios';
 
 // Interface describing a single launch
+// Interface describing detailed rocket data
+interface Rocket {
+    name: string;
+    active: boolean;
+    wikipedia: string;
+    weight: string;
+    height: number;
+    diameter: number;
+    cost_per_launch: number;
+    first_flight: string;
+    country: string;
+    stages: number;
+}
+
 interface Launch {
     mission_name: string | null;
     details: string | null;
@@ -127,11 +145,7 @@ interface Launch {
     image: string | null;
     webcast: string | null;
     article: string | null;
-    rocket: {
-        name: string;
-        cost_per_launch: number;
-        active: boolean;
-    };
+    rocket: Rocket,
     failures: {
         time: number;
         reason: string;
@@ -140,6 +154,9 @@ interface Launch {
 
 export default defineComponent({
     name: 'LaunchedList',
+    components: {
+        RocketModal,
+    },
     setup() {
         // Reactive references
         const launches = ref<Launch[]>([]);
@@ -150,6 +167,8 @@ export default defineComponent({
         const pageSize = ref<number>(7);
         const sortColumn = ref<string>('mission_name'); // Default sort column
         const sortOrder = ref<'asc' | 'desc'>('asc'); // Default sort order
+        const isModalOpen = ref<boolean>(false);
+        const selectedRocket = ref<Rocket | null>(null);
 
         // Fetch data from API
         const fetchLaunches = async () => {
@@ -173,6 +192,23 @@ export default defineComponent({
                 console.error('Error fetching launches:', error);
                 loading.value = false;
             }
+        };
+
+        // Fetch rocket details
+        const fetchRocketDetails = async (rocket_uuid: string) => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/rockets?rocket_uuid=${rocket_uuid}`);
+                selectedRocket.value = response.data.data[0]; // Assuming the API returns an array
+                isModalOpen.value = true;
+            } catch (error) {
+                console.error('Error fetching rocket details:', error);
+            }
+        };
+
+        // Close modal
+        const closeModal = () => {
+            isModalOpen.value = false;
+            selectedRocket.value = null;
         };
 
         watch(searchQuery, () => {
@@ -235,6 +271,10 @@ export default defineComponent({
             handleSort,
             prevPage,
             nextPage,
+            fetchRocketDetails,
+            closeModal,
+            isModalOpen,
+            selectedRocket,
         };
     },
 });

@@ -8,6 +8,7 @@ class RocketBase(SQLModel):
     Base schema for Rocket containing shared attributes.
     Used for request and response models.
     """
+    rocket_uuid: str = Field(title="Rocket UUID", description="Unique identifier for the rocket")
     name: Optional[str] = Field(default=None, title="Rocket Name", description="The name of the rocket")
     active: Optional[bool] = Field(default=None, title="Active", description="Is the rocket still in service?")
     wikipedia: Optional[str] = Field(default=None, title="Wikipedia Link", description="Link to Wikipedia page")
@@ -50,6 +51,7 @@ class RocketQueryParams(SQLModel):
     """
     Query parameters for filtering, sorting, and paginating rockets.
     """
+    rocket_uuid: Optional[str] = Field(default=None, title="Rocket UUID", description="Filter by rocket UUID")
     name: Optional[str] = Field(default=None, title="Rocket Name", description="Filter by rocket name")
     active: Optional[bool] = Field(default=None, title="Active", description="Filter by active status")
     wikipedia: Optional[bool] = Field(default=None, title="Has Wikipedia", description="Filter by presence of Wikipedia link")

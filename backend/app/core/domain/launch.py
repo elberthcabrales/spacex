@@ -35,8 +35,9 @@ class StarlinkResponse(SQLModel):
     name: Optional[str] = Field(default=None, title="Name", description="Name of the Starlink satellite")
 
 class RocketResponse(SQLModel):
-    name: str
-    cost_per_launch: int
+    rocket_uuid: str = Field(title="Rocket UUID", description="Unique identifier for the rocket")
+    name: Optional[str] = Field(default=None, title="Rocket Name", description="The name of the rocket")
+    cost_per_launch: Optional[int] = Field(default=None, title="Cost Per Launch", description="Launch cost in USD")
     active: bool
     
 class LaunchResponse(SQLModel):

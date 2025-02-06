@@ -13,7 +13,7 @@ class RocketRepository:
     def get_all(
         self,
         name: Optional[str] = None,
-        active: Optional[bool] = None,
+        rocket_uuid: Optional[str] = None,
         sort_by: Optional[str] = None,
         order: Optional[str] = "asc",
         skip: int = 0,
@@ -25,11 +25,10 @@ class RocketRepository:
 
         # Apply filters
         filters = []
-        if name:
+        if rocket_uuid:
+            filters.append(Rocket.rocket_uuid == rocket_uuid)
+        elif name:
             filters.append(Rocket.name.ilike(f"%{name}%"))
-        if active is not None:
-            filters.append(Rocket.active == active)
-
 
         # Apply all filters at once
         if filters:
@@ -37,11 +36,14 @@ class RocketRepository:
 
         # Apply sorting
         sort_options = {
+            "name": Rocket.name,
             "height": Rocket.height,
+            "country": Rocket.country,
             "diameter": Rocket.diameter,
-            "cost_per_launch": Rocket.cost_per_launch
+            "cost_per_launch": Rocket.cost_per_launch,
+            "first_flight": Rocket.first_flight
         }
-        sort_field = sort_options.get(sort_by, Rocket.id)  # Default sorting by ID
+        sort_field = sort_options.get(sort_by, Rocket.name)  # Default sorting by ID
 
         if order == "desc":
             query = query.order_by(sort_field.desc())

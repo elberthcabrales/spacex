@@ -14,7 +14,7 @@ class GetRocketsUseCase:
     def execute(
         self,
         name: Optional[str] = None,
-        active: Optional[bool] = None,
+        rocket_uuid: Optional[str] = None,
         sort_by: Optional[str] = None,
         order: Optional[str] = "asc",
         skip: int = 0,
@@ -24,7 +24,7 @@ class GetRocketsUseCase:
 
         rockets, total_count = self.repository.get_all(
             name=name,
-            active=active,
+            rocket_uuid=rocket_uuid,
             sort_by=sort_by,
             order=order,
             skip=skip,

@@ -93,6 +93,7 @@ class LaunchRepository:
                 "webcast": launch.webcast,
                 "article": launch.article,
                 "rocket": {
+                    "rocket_uuid": launch.rocket.rocket_uuid if launch.rocket else None,
                     "name": launch.rocket.name if launch.rocket else None,
                     "cost_per_launch": launch.rocket.cost_per_launch if launch.rocket else None,
                     "active": launch.rocket.active if launch.rocket else None
