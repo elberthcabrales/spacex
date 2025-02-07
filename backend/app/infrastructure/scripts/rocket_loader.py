@@ -1,5 +1,4 @@
 # app/infrastructure/scripts/rocket_loader.py
-import requests
 from sqlmodel import Session
 from app.core.domain.failure import Failure
 from app.core.domain.rocket import Rocket
@@ -8,22 +7,13 @@ from app.core.domain.second_stage import SecondStage
 from app.core.domain.launch import Launch
 from app.core.domain.starlink import Starlink
 
-SPACEX_ROCKETS_URL = "https://api.spacexdata.com/v4/rockets"
-SPACEX_LAUNCHES_URL = "https://api.spacexdata.com/v4/launches"
-SPACEX_STARLINK_URL = "https://api.spacexdata.com/v4/starlink"
-
-def fetch_and_load_rockets(session: Session) -> None:
+def fetch_and_load_rockets(session: Session, rockets_data) -> None:
     """
     Fetch rocket data from SpaceX API and insert into the database,
     including first_stage and second_stage info.
     """
     try:
-        response = requests.get(SPACEX_ROCKETS_URL)
-        response.raise_for_status()
-        rockets_data = response.json()
-
         print(f"Found {len(rockets_data)} rockets")
-
         for item in rockets_data:
             # Insert Rocket
             rocket = Rocket(
@@ -41,7 +31,6 @@ def fetch_and_load_rockets(session: Session) -> None:
                 weight=int(item["mass"]["kg"]) if item["mass"]["kg"] else 0,
             )
             session.merge(rocket)
-
             # Insert FirstStage (one-to-one)
             first_stage_data = item.get("first_stage")
             if first_stage_data:
@@ -53,7 +42,6 @@ def fetch_and_load_rockets(session: Session) -> None:
                     rocket_uuid=rocket.rocket_uuid,  # One-to-one reference
                 )
                 session.merge(first_stage)
-
             # Insert SecondStage (one-to-one)
             second_stage_data = item.get("second_stage")
             if second_stage_data:
@@ -64,32 +52,24 @@ def fetch_and_load_rockets(session: Session) -> None:
                     rocket_uuid=rocket.rocket_uuid,  # One-to-one reference
                 )
                 session.merge(second_stage)
-
         session.commit()
         print("Rocket, FirstStage, and SecondStage data inserted successfully.")
-
     except Exception as e:
         session.rollback()
         print(f"An error occurred: {e}")
 
-def fetch_and_load_launches(session: Session) -> None:
+def fetch_and_load_launches(session: Session, launches_data) -> None:
     """
     Fetch launch data from SpaceX API and insert into the database.
     """
     try:
-        response = requests.get(SPACEX_LAUNCHES_URL)
-        response.raise_for_status()
-        launches_data = response.json()
-
         print(f"Found {len(launches_data)} launches")
-
         for item in launches_data:
             # Check if the rocket exists
             rocket = session.query(Rocket).filter(Rocket.rocket_uuid == item["rocket"]).first()
             if not rocket:
                 print(f"Skipping launch {item['id']} because rocket {item['rocket']} is missing")
                 continue
-
             launch = Launch(
                 launched_uuid=item["id"],
                 details=item.get("details"),
@@ -102,7 +82,6 @@ def fetch_and_load_launches(session: Session) -> None:
                 rocket_uuid=rocket.rocket_uuid,  # Many-to-One reference
             )
             session.merge(launch)
-
             # Insert Failures (if any)
             failure_data = item.get("failures", [])
             for failure in failure_data:
@@ -112,30 +91,22 @@ def fetch_and_load_launches(session: Session) -> None:
                     reason=failure.get("reason"),
                 )
                 session.merge(failure_record)
-
         session.commit()
         print("Launch data inserted successfully.")
-
     except Exception as e:
         session.rollback()
         print(f"An error occurred: {e}")
 
-def fetch_and_load_starlinks(session: Session) -> None:
+def fetch_and_load_starlinks(session: Session, starlinks_data) -> None:
     """
     Fetch Starlink data from SpaceX API and insert into the database.
     """
     try:
-        response = requests.get(SPACEX_STARLINK_URL)
-        response.raise_for_status()
-        starlinks_data = response.json()
-
         print(f"Found {len(starlinks_data)} starlinks")
-
         for item in starlinks_data:
             # Handle missing launch
             launch = session.query(Launch).filter(Launch.launched_uuid == item.get("launch")).first()
             launch_uuid = launch.launched_uuid if launch else None
-
             starlink = Starlink(
                 starlink_uuid=item["id"],
                 name=item.get("spaceTrack", {}).get("OBJECT_NAME"),
@@ -144,10 +115,8 @@ def fetch_and_load_starlinks(session: Session) -> None:
                 launched_uuid=launch_uuid,  # This can now be None
             )
             session.merge(starlink)
-
         session.commit()
         print("Starlink data inserted successfully.")
-
     except Exception as e:
         session.rollback()
         print(f"An error occurred: {e}")

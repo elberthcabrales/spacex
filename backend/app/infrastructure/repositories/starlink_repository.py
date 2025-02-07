@@ -35,6 +35,9 @@ class StarlinkRepository:
         if name:
             filters.append(Starlink.name.ilike(f"%{name}%"))
 
+        if filters:
+            query = query.where(*filters)
+
         # Sorting options
         sort_options = {
             "name": Starlink.name,
