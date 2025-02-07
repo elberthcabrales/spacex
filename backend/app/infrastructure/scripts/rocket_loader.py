@@ -140,7 +140,6 @@ def fetch_and_load_starlinks(session: Session) -> None:
                 starlink_uuid=item["id"],
                 name=item.get("spaceTrack", {}).get("OBJECT_NAME"),
                 creation_date=item.get("spaceTrack", {}).get("CREATION_DATE"),
-                object_name=item.get("spaceTrack", {}).get("OBJECT_NAME"),
                 country_code=item.get("spaceTrack", {}).get("COUNTRY_CODE"),
                 launched_uuid=launch_uuid,  # This can now be None
             )

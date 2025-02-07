@@ -10,11 +10,8 @@ from app.core.domain.starlink import PaginatedStarlinkResponse
 router = APIRouter()
 
 class SortOptions(str, Enum):
-    name: Optional[str] = Field(default=None, title="Starlink Name", description="The name of the rocket")
-    creation_date: Optional[str] = Field(default=None)  # spaceTrack.creation_date
-    object_name: Optional[str] = Field(default=None)  # spaceTrack.object_name
-    country_code: Optional[str] = Field(default=None)  # spaceTrack.country_code
-
+    name = "name"
+    creation_date = "creation_date"
 
 @router.get(
     "/starlinks/",
@@ -33,7 +30,10 @@ def list_starlinks(
     session: Session = Depends(get_session)
 ):
     """API endpoint to list Starlinks with pagination and filtering."""
+    name = name.strip() if name else None
+
     use_case = GetStarlinksUseCase(session)
+    
     return use_case.execute(
         name=name,
         sort_by=sort_by,

@@ -53,10 +53,10 @@
                             Success
                             <span v-if="sortColumn === 'success'">{{ sortOrder === "asc" ? "▲" : "▼" }}</span>
                         </th>
-                        <th @click="handleSort('rocket.name')"
+                        <th @click="handleSort('rocket_name')"
                             class="px-6 py-3 text-left border-b border-white/20 cursor-pointer">
                             Rocket
-                            <span v-if="sortColumn === 'rocket.name'">{{ sortOrder === "asc" ? "▲" : "▼" }}</span>
+                            <span v-if="sortColumn === 'rocket_name'">{{ sortOrder === "asc" ? "▲" : "▼" }}</span>
                         </th>
                         <th class="px-6 py-3 text-left border-b border-white/20">Action</th>
                     </tr>
@@ -177,7 +177,6 @@ export default defineComponent({
                     skip: (currentPage.value - 1) * pageSize.value,
                     limit: pageSize.value,
                     mission_name: searchQuery.value || undefined,
-                    details: undefined, // Add if needed
                     sort_by: sortColumn.value,
                     order: sortOrder.value,
                 };

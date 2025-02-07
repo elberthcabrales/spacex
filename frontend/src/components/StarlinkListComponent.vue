@@ -32,10 +32,12 @@
             <table class="table-auto w-full text-sm text-gray-200">
                 <thead>
                     <tr class="bg-white/10 text-gray-300 uppercase text-xs tracking-wider">
-                        <th class="px-6 py-3 text-left border-b border-white/20">ID</th>
-                        <th class="px-6 py-3 text-left border-b border-white/20">Name</th>
-                        <th class="px-6 py-3 text-left border-b border-white/20">Creation Date</th>
-                        <th class="px-6 py-3 text-left border-b border-white/20">Country Code</th>
+                        <th @click="handleSort('name')"
+                            class="px-6 py-3 text-left border-b border-white/20 cursor-pointer">Name</th>
+                        <th @click="handleSort('creation_date')"
+                            class="px-6 py-3 text-left border-b border-white/20 cursor-pointer">Creation Date</th>
+                        <th class="px-6 py-3 text-left border-b border-white/20">Launch date</th>
+                        <th class="px-6 py-3 text-left border-b border-white/20">Cost per launch</th>
                         <th class="px-6 py-3 text-left border-b border-white/20">Rocket</th>
                     </tr>
                 </thead>
@@ -43,16 +45,16 @@
                     <tr v-for="starlink in paginatedStarlinks" :key="starlink.starlink_uuid"
                         class="hover:bg-white/5 transition-colors">
                         <td class="px-6 py-4 border-b border-white/10">
-                            {{ starlink.starlink_uuid }}
+                            {{ starlink.name || "No name" }}
                         </td>
                         <td class="px-6 py-4 border-b border-white/10">
-                            {{ starlink.name || "N/A" }}
+                            {{ starlink.creation_date || "No date" }}
                         </td>
                         <td class="px-6 py-4 border-b border-white/10">
-                            {{ starlink.creation_date || "N/A" }}
+                            {{ starlink.rocket.first_flight || "No launched" }}
                         </td>
                         <td class="px-6 py-4 border-b border-white/10">
-                            {{ starlink.country_code || "N/A" }}
+                            {{ starlink.rocket.cost_per_launch || "N/A" }}
                         </td>
                         <td class="px-6 py-4 border-b border-white/10">
                             {{ starlink.rocket?.name || "N/A" }}
@@ -90,6 +92,7 @@ interface Starlink {
         rocket__uuid: string;
         name: string;
         cost_per_launch: number;
+        first_flight: string;
         active: boolean;
     };
 }
@@ -102,6 +105,8 @@ export default defineComponent({
         const totalRecords = ref<number>(0);
         const loading = ref<boolean>(true);
         const searchQuery = ref<string>('');
+        const sortColumn = ref<string>('name');
+        const sortOrder = ref<'asc' | 'desc'>('asc');
         const currentPage = ref<number>(1);
         const pageSize = ref<number>(10); // Items per page
 
@@ -112,6 +117,8 @@ export default defineComponent({
                     skip: (currentPage.value - 1) * pageSize.value,
                     limit: pageSize.value,
                     name: searchQuery.value || undefined,
+                    sort_by: sortColumn.value,
+                    order: sortOrder.value,
                 };
 
                 const response = await axios.get('http://127.0.0.1:8000/api/starlinks/', { params });
@@ -124,6 +131,22 @@ export default defineComponent({
                 console.error('Error fetching starlinks:', error);
                 loading.value = false;
             }
+        };
+
+        watch(searchQuery, () => {
+            currentPage.value = 1; // Reset to first page when search query changes
+            fetchStarlinks(); // Refetch data with new search query
+        });
+
+        const handleSort = (column: string) => {
+            if (column === sortColumn.value) {
+                sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn.value = column;
+                sortOrder.value = 'asc';
+            }
+            currentPage.value = 1; // Reset to first page when sorting changes
+            fetchStarlinks();
         };
 
         // Computed property: total pages
@@ -173,6 +196,7 @@ export default defineComponent({
             paginatedStarlinks,
             prevPage,
             nextPage,
+            handleSort,
         };
     },
 });

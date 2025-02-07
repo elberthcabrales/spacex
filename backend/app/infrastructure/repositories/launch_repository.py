@@ -17,8 +17,6 @@ class LaunchRepository:
         self,
         mission_name: Optional[str] = None,
         details: Optional[str] = None,
-        upcoming: Optional[bool] = None,
-        success: Optional[bool] = None,
         sort_by: Optional[str] = None,
         order: Optional[str] = "asc",
         skip: int = 0,
@@ -40,10 +38,6 @@ class LaunchRepository:
             filters.append(Launch.mission_name.ilike(f"%{mission_name}%"))
         if details:
             filters.append(Launch.details.ilike(f"%{details}%"))
-        if upcoming is not None:
-            filters.append(Launch.upcoming == upcoming)
-        if success is not None:
-            filters.append(Launch.success == success)
 
         if filters:
             query = query.where(*filters)
