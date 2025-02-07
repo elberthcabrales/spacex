@@ -20,12 +20,12 @@ def process_message(message_body):
     """Process the message body and call the appropriate loader function."""
     data = json.loads(message_body)
     with Session(engine) as session:
-        if "rocket" in data[0]:
-            fetch_and_load_rockets(session, data)
-        elif "launch" in data[0]:
-            fetch_and_load_launches(session, data)
-        elif "starlink" in data[0]:
-            fetch_and_load_starlinks(session, data)
+        if "rocket" == data[0]:
+            fetch_and_load_rockets(session, data[1])
+        elif "launch" == data[0]:
+            fetch_and_load_launches(session, data[1])
+        elif "starlink" == data[0]:
+            fetch_and_load_starlinks(session, data[1])
         else:
             print("Unknown message type")
 
