@@ -38,7 +38,7 @@ def fetch_and_load_rockets(session: Session) -> None:
                 wikipedia=item.get("wikipedia"),
                 height=float(item["height"]["meters"]) if item["height"]["meters"] else None,
                 diameter=float(item["diameter"]["meters"]) if item["diameter"]["meters"] else None,
-                weight=str(item["mass"]["kg"]) if item["mass"]["kg"] else None,
+                weight=int(item["mass"]["kg"]) if item["mass"]["kg"] else 0,
             )
             session.merge(rocket)
 

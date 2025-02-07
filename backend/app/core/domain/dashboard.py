@@ -5,7 +5,7 @@ class DashboardStatistics(BaseModel):
     rocket_name: str
     active: bool
     first_flight: str
-    weight: str
+    weight: int
     height: float
     diameter: float
     cost_per_launch: int
@@ -19,4 +19,3 @@ class DashboardStatistics(BaseModel):
     total_successful_launches: int
     total_upcoming_launches: int
     total_failures: int
-    total_starlinks_deployed: int

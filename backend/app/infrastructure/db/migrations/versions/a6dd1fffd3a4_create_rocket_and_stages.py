@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('wikipedia', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.Column('weight', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('weight', sa.Integer(), nullable=True),
     sa.Column('height', sa.Float(), nullable=True),
     sa.Column('diameter', sa.Float(), nullable=True),
     sa.Column('cost_per_launch', sa.Integer(), nullable=True),

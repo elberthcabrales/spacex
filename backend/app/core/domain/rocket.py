@@ -12,7 +12,7 @@ class RocketBase(SQLModel):
     name: Optional[str] = Field(default=None, title="Rocket Name", description="The name of the rocket")
     active: Optional[bool] = Field(default=None, title="Active", description="Is the rocket still in service?")
     wikipedia: Optional[str] = Field(default=None, title="Wikipedia Link", description="Link to Wikipedia page")
-    weight: Optional[str] = Field(default=None, title="Weight", description="Weight in kg")
+    weight: Optional[int] = Field(default=None, title="Weight", description="Weight in kg")
     height: Optional[float] = Field(default=None, title="Height", description="Height in meters")
     diameter: Optional[float] = Field(default=None, title="Diameter", description="Diameter in meters")
     cost_per_launch: Optional[int] = Field(default=None, title="Cost Per Launch", description="Launch cost in USD")

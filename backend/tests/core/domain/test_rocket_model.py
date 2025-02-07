@@ -18,7 +18,7 @@ def test_create_rocket(session):
         name="Falcon 9",
         active=True,
         wikipedia="https://en.wikipedia.org/wiki/Falcon_9",
-        weight="540,000 kg",
+        weight=540,
         height=70.0,
         diameter=3.7,
         cost_per_launch=50000000,

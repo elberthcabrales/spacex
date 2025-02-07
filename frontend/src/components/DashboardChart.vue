@@ -36,22 +36,22 @@
       <!-- Stages Chart -->
       <div
         class="chart-container bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-2xl p-6 shadow-2xl border border-gray-700 hover:shadow-3xl transition-shadow duration-300">
-        <h3 class="text-xl font-semibold text-gray-300 mb-4">Stages</h3>
-        <div ref="stagesChart" class="h-64"></div>
+        <h3 class="text-xl font-semibold text-gray-300 mb-4">First Stage Engines</h3>
+        <div ref="firstStageEnginesChart" class="h-64"></div>
       </div>
 
       <!-- Engines Chart -->
       <div
         class="chart-container bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-2xl p-6 shadow-2xl border border-gray-700 hover:shadow-3xl transition-shadow duration-300">
-        <h3 class="text-xl font-semibold text-gray-300 mb-4">First Stage Engines</h3>
-        <div ref="enginesChart" class="h-64"></div>
+        <h3 class="text-xl font-semibold text-gray-300 mb-4">Second Stage Engines</h3>
+        <div ref="secondStageEnginesChart" class="h-64"></div>
       </div>
 
       <!-- Fuel Chart -->
       <div
         class="chart-container bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-2xl p-6 shadow-2xl border border-gray-700 hover:shadow-3xl transition-shadow duration-300">
-        <h3 class="text-xl font-semibold text-gray-300 mb-4">First Stage Fuel (tons)</h3>
-        <div ref="fuelChart" class="h-64"></div>
+        <h3 class="text-xl font-semibold text-gray-300 mb-4">Total Upcoming Launches</h3>
+        <div ref="totalUpcomingChart" class="h-64"></div>
       </div>
 
       <!-- Launches Chart -->
@@ -93,9 +93,9 @@ export default {
     this.drawHeightChart();
     this.drawDiameterChart();
     this.drawWeightChart();
-    this.drawStagesChart();
-    this.drawEnginesChart();
-    this.drawFuelChart();
+    this.drawFirstStageEnginesChart();
+    this.drawSecondStageEnginesChart();
+    this.drawTotalUpcomingChart();
     this.drawLaunchesChart();
     this.drawFailuresChart();
   },
@@ -188,93 +188,20 @@ export default {
     drawWeightChart() {
       this.drawBarChart("weightChart", "", "weight", 400, 300, "purple");
     },
-    drawStagesChart() {
-      this.drawBarChart("stagesChart", "", "stages", 400, 300, "teal");
+    drawFirstStageEnginesChart() {
+      this.drawBarChart("firstStageEnginesChart", "", "first_stage_engines", 400, 300, "teal");
     },
-    drawEnginesChart() {
-      this.drawBarChart("enginesChart", "", "first_stage_engines", 400, 300, "brown");
+    drawSecondStageEnginesChart() {
+      this.drawBarChart("secondStageEnginesChart", "", "second_stage_engines", 400, 300, "brown");
     },
-    drawFuelChart() {
-      this.drawBarChart("fuelChart", "", "first_stage_fuel_amount_tons", 400, 300, "red");
+    drawTotalUpcomingChart() {
+      this.drawBarChart("totalUpcomingChart", "", "total_upcoming_launches", 400, 300, "red");
     },
     drawLaunchesChart() {
-      const margin = { top: 20, right: 30, bottom: 40, left: 90 };
-      const width = 400 - margin.left - margin.right;
-      const height = 300 - margin.top - margin.bottom;
-
-      const svg = d3
-        .select(this.$refs.launchesChart)
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-      const x = d3
-        .scaleLinear()
-        .domain([0, d3.max(this.rockets, (d) => d.total_successful_launches)])
-        .range([0, width]);
-
-      const y = d3.scaleBand().domain(this.rockets.map((d) => d.rocket_name)).range([0, height]).padding(0.1);
-
-      svg
-        .selectAll(".bar-launches")
-        .data(this.rockets)
-        .enter()
-        .append("rect")
-        .attr("class", "bar-launches")
-        .attr("x", 0)
-        .attr("y", (d) => y(d.rocket_name))
-        .attr("width", (d) => x(d.total_successful_launches))
-        .attr("height", y.bandwidth())
-        .attr("fill", "blue");
-
-      svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
-      svg.append("g").call(d3.axisLeft(y));
-
-      svg
-        .append("text")
-        .attr("x", width / 2)
-        .attr("y", -10)
-        .attr("text-anchor", "middle")
+      this.drawBarChart("launchesChart", "", "total_successful_launches", 400, 300, "gold");
     },
     drawFailuresChart() {
-      const margin = { top: 20, right: 30, bottom: 40, left: 90 };
-      const width = 400 - margin.left - margin.right;
-      const height = 300 - margin.top - margin.bottom;
-
-      const svg = d3
-        .select(this.$refs.failuresChart)
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-      const x = d3.scaleLinear().domain([0, d3.max(this.rockets, (d) => d.total_failures)]).range([0, width]);
-
-      const y = d3.scaleBand().domain(this.rockets.map((d) => d.rocket_name)).range([0, height]).padding(0.1);
-
-      svg
-        .selectAll(".bar-failures")
-        .data(this.rockets)
-        .enter()
-        .append("rect")
-        .attr("class", "bar-failures")
-        .attr("x", 0)
-        .attr("y", (d) => y(d.rocket_name))
-        .attr("width", (d) => x(d.total_failures))
-        .attr("height", y.bandwidth())
-        .attr("fill", "maroon");
-
-      svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
-      svg.append("g").call(d3.axisLeft(y));
-
-      svg
-        .append("text")
-        .attr("x", width / 2)
-        .attr("y", -10)
-        .attr("text-anchor", "middle")
+      this.drawBarChart("failuresChart", "", "total_failures", 400, 300, "red");
     },
   },
 };

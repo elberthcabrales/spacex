@@ -30,13 +30,11 @@ def get_dashboard_statistics(db: Session) -> list[DashboardStatistics]:
             func.count(case((Launch.success == True, 1))).label("total_successful_launches"),
             func.count(case((Launch.upcoming == True, 1))).label("total_upcoming_launches"),
             func.count(Failure.id).label("total_failures"),
-            func.count(Starlink.id).label("total_starlinks_deployed")
         )
         .outerjoin(FirstStage, Rocket.rocket_uuid == FirstStage.rocket_uuid)
         .outerjoin(SecondStage, Rocket.rocket_uuid == SecondStage.rocket_uuid)
         .outerjoin(Launch, Rocket.rocket_uuid == Launch.rocket_uuid)
         .outerjoin(Failure, Launch.launched_uuid == Failure.launched_uuid)
-        .outerjoin(Starlink, Launch.launched_uuid == Starlink.launched_uuid)
         .group_by(
             Rocket.name,
             Rocket.active,
@@ -76,7 +74,6 @@ def get_dashboard_statistics(db: Session) -> list[DashboardStatistics]:
             total_successful_launches=row.total_successful_launches,
             total_upcoming_launches=row.total_upcoming_launches,
             total_failures=row.total_failures,
-            total_starlinks_deployed=row.total_starlinks_deployed,
         )
         for row in results
     ]

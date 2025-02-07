@@ -48,4 +48,4 @@ def test_fetch_and_load_rockets(mock_get, session):
     assert rocket.country == "United States"
     assert rocket.height == 70.0       # from "height.meters"
     assert rocket.diameter == 3.7      # from "diameter.meters"
-    assert rocket.weight == "540000"   # stored as text
+    assert rocket.weight == 540   # stored as text
