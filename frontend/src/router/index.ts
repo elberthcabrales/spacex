@@ -13,7 +13,7 @@ const router = createRouter({
     },
     {
       path: '/lunches-and-rockets',
-      name: '',
+      name: 'Rockets and launches',
       component: RocketsAndLaunchesView,
     },
     {

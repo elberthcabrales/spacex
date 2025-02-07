@@ -1,11 +1,8 @@
 <template>
     <div v-if="isOpen" class="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
-        <!-- Modal Container -->
         <div class="bg-black/90 p-8 rounded-lg shadow-2xl max-w-md w-full text-white space-y-6">
-            <!-- Title -->
             <h2 class="text-2xl font-bold text-center text-blue-400">{{ rocket?.name }}</h2>
 
-            <!-- Rocket Details -->
             <div class="space-y-4">
                 <p class="flex justify-between">
                     <span class="font-medium">Active:</span>
@@ -61,7 +58,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 
-// Interface describing detailed rocket data
 interface Rocket {
     name: string;
     active: boolean;
@@ -102,7 +98,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Use your existing Tailwind setup, but add a custom gradient class */
 .bg-space-gradient {
     background: linear-gradient(135deg, #f4f4f8, #302b63, #24243e);
 }
